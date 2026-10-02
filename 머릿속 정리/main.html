@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        
+
+    </style>
+</head>
+
+<body>
+    <h1>SQL 정리하기</h1>
+    <ul class="page">
+        <li>
+            <p>1. A 테이블 만들기 (이름은 A, no 은 숫자 char는 문자열 time은 날짜로)</p>
+            <textarea rows="5" cols="80" id="answer"></textarea> <br>
+            <input type="radio" name="q" id="q1">
+            <label for="q1" ></label>
+        </li>
+        <li>
+            <p> 정답 : CREATE TABLE example(
+                no NUMBER,
+                name VARCHAR2(20),
+                now DATE
+                ); 
+            </p>
+        </li>
+        <li>
+            <p>2. A 테이블에 행 추가하기 (1, 2, 3 모두 추가)</p>
+            <textarea rows="5" cols="80" id="answer"></textarea> <br>
+            <input type="radio" name="q" id="q2">
+            <label for="q2"></label>
+        </li>
+        <li>
+            <p>
+                정답 : INSERT INTO A (no, name, now) VALUES (1, '가', SYSDATE);
+            </p>
+        </li>
+        <li>
+            <p>3. A 테이블 칼럼 수정하기 (no 1 을 4 로 수정)</p>
+            <textarea rows="5" cols="80" id="answer"></textarea> <br>
+            <input type="radio" name="q" id="q3">
+            <label for="q3"></label>
+        </li>
+        <li>
+            <p>정답 : UPDATE A SET no = 4 WHERE no = 1;</p>
+        </li>
+        <li>
+            <p>4. A 테이블 칼럼 삭제하기 (no 4인 칼럼 삭제)</p>
+            <textarea rows="5" cols="80" id="answer"></textarea> <br>
+            <input type="radio" name="q" id="q3">
+            <label for="q3"></label>
+        </li>
+        <li>
+            <p>정답 : DELETE FROM A WHERE no = 4;</p>
+        </li>
+
+
+
+
+    </ul>
+
+</body>
+
+</html>

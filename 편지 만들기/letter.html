@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마음을 담은 편지</title>
+  <!-- [고정] 구글 폰트 링크 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hi+Melody&family=Jua&family=Nanum+Brush+Script&family=Single+Day&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 100%;
+      height: 100vh;
+      /* 준비된 비율에 맞춰 반복 없이 한 번만 배경 화면 꽉 차게 조절 */
+      background-image: url('./img/background.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 35px;
+    }
+
+    /* 🎬 화면 전체를 부드럽게 페이드인 시켜주는 완전 암전 막 */
+    .page-fade-in-mask {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000000;
+      z-index: 9999;
+      opacity: 1;
+      pointer-events: none;
+      transition: opacity 1s ease-in-out;
+    }
+    .page-fade-in-mask.clear {
+      opacity: 0;
+    }
+
+    /* ✏️ 옥스포드 지우개 연필 바 */
+    .pencil-container {
+      display: flex;
+      align-items: center;
+      position: relative;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.12));
+    }
+
+    .pencil-eraser {
+      width: 14px;
+      height: 24px;
+      background: linear-gradient(to bottom, #ff7e8e 0%, #ff5268 50%, #d6364b 100%);
+      border-radius: 3px 0 0 3px;
+    }
+
+    .pencil-ferrule {
+      width: 32px;
+      height: 24px;
+      background: linear-gradient(to left, 
+        #b8b8b8 0%, #e0e0e0 15%, #b8b8b8 30%, #e0e0e0 45%, 
+        #b8b8b8 60%, #e0e0e0 75%, #b8b8b8 90%, #999999 100%
+      );
+      border-right: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .pencil-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, #ffc947 0%, #ffb61a 30%, #ffa500 75%, #cc8400 100%);
+      height: 24px;
+      width: 520px; 
+      padding: 0 30px; 
+      font-family: 'Single Day', cursive;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    .pencil-tip-wrapper {
+      position: relative;
+      width: 55px;
+      height: 24px;
+      overflow: hidden;
+    }
+
+    .pencil-wood {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-left: 55px solid #f1dec6;
+    }
+
+    .pencil-graphite {
+      position: absolute;
+      right: 0;
+      top: 8px;
+      width: 0;
+      height: 0;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 15px solid #2d2a26;
+    }
+
+    .pencil-body input[type="radio"] {
+      display: none;
+    }
+
+    .pencil-body label {
+      padding: 2px 20px;
+      margin: 0 5px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.9);
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .pencil-body label:hover {
+      color: #333;
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .pencil-body input[type="radio"]:checked + label {
+      background-color: #faf6ec; 
+      color: #513611;
+      font-weight: bold;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    label[for="f-love"] { font-family: 'Single Day', cursive; }
+    label[for="f-thanks"] { font-family: 'Hi Melody', cursive; }
+    label[for="f-sorry"] { font-family: 'Nanum Brush Script', cursive; letter-spacing: 2px; }
+
+    /* 아날로그 종이 질감의 편지지 컨테이너 */
+    .letter-container {
+      position: relative;
+      width: 90%;
+      max-width: 600px;
+      background-color: #faf6ec; 
+      padding: 50px 40px 40px 40px; 
+      border-radius: 1px; 
+      box-shadow: 
+        0 1px 3px rgba(0,0,0,0.05),
+        0 10px 30px rgba(138, 120, 102, 0.2),
+        inset 0 0 40px rgba(255, 255, 255, 0.6); 
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      overflow: hidden;
+    }
+
+    .stamp-btn {
+      position: absolute;
+      top: 25px;
+      right: 40px;
+      width: 65px; 
+      height: 78px;
+      border: 1px dashed #c0b4a4;
+      background-color: rgba(255, 255, 255, 0.4);
+      background-size: cover;       
+      background-position: center;   
+      background-repeat: no-repeat;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      z-index: 5;
+    }
+
+    .stamp-btn:hover {
+      border-color: #8c7e6e;
+      transform: scale(1.05); 
+    }
+
+    .letter-title {
+      color: #6d6051;
+      border-bottom: 2px solid #eae2d5; 
+      padding-bottom: 15px;
+      letter-spacing: 1px;
+      width: 65%; 
+      transition: all 0s ease; 
+    }
+
+    .letter-textarea {
+      width: 100%;
+      height: 350px;
+      background: transparent;
+      border: none;
+      resize: none;
+      outline: none;
+      color: #3a322d;
+      transition: all 0s ease; 
+      background-image: linear-gradient(rgba(0,0,0,0) 95%, rgba(195,175,155,0.2) 95%);
+      background-size: 100% 2.4rem;
+      background-attachment: local;
+    }
+
+    /* 폰트 및 자간 통일 */
+    .font-love { font-family: 'Single Day', cursive; font-size: 1.5rem; line-height: 2.4rem; letter-spacing: 0px; }
+    .font-thanks { font-family: 'Hi Melody', cursive; font-size: 1.5rem; line-height: 2.4rem; letter-spacing: 0px; }
+    .font-sorry { font-family: 'Nanum Brush Script', cursive; font-size: 1.5rem; line-height: 2.4rem; letter-spacing: 1.5px; font-weight: 500; } 
+
+    /* 상단 타이틀 안내 (Bold 지정) */
+    .title-love { font-family: 'Single Day', cursive; font-size: 1.6rem; font-weight: 700; }
+    .title-thanks { font-family: 'Hi Melody', cursive; font-size: 1.6rem; font-weight: 700; }
+    .title-sorry { font-family: 'Nanum Brush Script', cursive; font-size: 1.6rem; font-weight: 700; letter-spacing: 2px; }
+
+    /* 부드러운 마음 보내기 버튼 (가로 폭 고정) */
+    .send-btn {
+      align-self: flex-end;
+      background-color: #6d6051;
+      color: #fff;
+      border: none;
+      padding: 12px 0;           
+      min-width: 170px;          
+      text-align: center;
+      border-radius: 24px;       
+      cursor: pointer;
+      font-size: 1rem;           
+      letter-spacing: 1.5px;
+      box-shadow: 0 4px 10px rgba(109, 96, 81, 0.2); 
+      transition: all 0.3s ease;
+    }
+    .send-btn:hover { 
+      background-color: #554a3e; 
+      box-shadow: 0 6px 14px rgba(109, 96, 81, 0.3); 
+      transform: translateY(-1px);
+    }
+    .send-btn:active { 
+      transform: translateY(1px);
+      box-shadow: 0 2px 5px rgba(109, 96, 81, 0.2);
+    }
+
+    /* 🎬 엔딩 콘텐츠 레이아웃 구조 디자인 */
+    .ending-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px; 
+    }
+
+    .ending-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000000;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.5s ease-in-out;
+    }
+    .ending-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .ending-message {
+      color: #ffffff;
+      font-family: 'Single Day', cursive; /* 어떤 테마에서든 싱글데이 서체 완벽 고정 */
+      font-size: 1.8rem;
+      line-height: 1.8;
+      text-align: center;
+      letter-spacing: 2px;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+      transition-delay: 1.2s;
+    }
+    .ending-overlay.active .ending-message {
+      opacity: 0.85;
+    }
+
+    /* 처음으로 돌아가기 버튼 스타일 규칙 */
+    .home-btn {
+      background-color: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.25); 
+      color: rgba(255, 255, 255, 0.6);
+      font-family: 'Single Day', cursive; 
+      font-size: 1rem;
+      letter-spacing: 1px;
+      padding: 10px 24px;
+      border-radius: 20px; 
+      cursor: pointer;
+      opacity: 0;
+      transition: all 1.5s ease-in-out, background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+      transition-delay: 2.5s; /* 문구가 나타나고 난 뒤 1.3초 뒤 조용히 등장 */
+    }
+    .ending-overlay.active .home-btn {
+      opacity: 1;
+    }
+    .home-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #ffffff;
+    }
+    .home-btn:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 화면 전체 페이드인용 검은 막 -->
+  <div class="page-fade-in-mask" id="fadeInMask"></div>
+
+  <!-- 옥스포드 지우개 연필 바 -->
+  <div class="pencil-container">
+    <div class="pencil-eraser"></div>
+    <div class="pencil-ferrule"></div>
+    <div class="pencil-body">
+      <input type="radio" id="f-love" name="font-select" value="love" checked onclick="changeFontOnly('love')">
+      <label for="f-love">Single Day</label>
+
+      <input type="radio" id="f-thanks" name="font-select" value="thanks" onclick="changeFontOnly('thanks')">
+      <label for="f-thanks">Hi Melody</label>
+
+      <input type="radio" id="f-sorry" name="font-select" value="sorry" onclick="changeFontOnly('sorry')">
+      <label for="f-sorry">Nanum Brush</label>
+    </div>
+    <div class="pencil-tip-wrapper">
+      <div class="pencil-wood"></div>
+      <div class="pencil-graphite"></div>
+    </div>
+  </div>
+
+  <!-- 편지지 구역 -->
+  <div class="letter-container">
+    <div class="stamp-btn" id="stampBtn" title="누르면 다음 마음으로 전환됩니다" onclick="rotateTheme()"></div>
+
+    <div class="letter-title" id="letterSub">마음을 적어보세요...</div>
+    <textarea class="letter-textarea" id="letterText" placeholder="여기에 하고 싶었던 말을 적어보세요..."></textarea>
+    
+    <button class="send-btn" id="sendBtn">마음 보내기</button>
+  </div>
+
+  <!-- 처음으로 돌아가기 버튼이 결합된 엔딩 레이어 구역 -->
+  <!-- 기존 마음 보내기 버튼 </div> 태그 바로 아래에 이어서 붙여넣으세요 -->
+
+  <!-- 처음으로 돌아가기 버튼이 결합된 엔딩 레이어 구역 -->
+  <div class="ending-overlay" id="endingOverlay">
+    <div class="ending-content">
+      <div class="ending-message">당신의 소중한 마음이<br>따스하게 전달되었습니다.</div>
+      <button class="home-btn" onclick="location.href='index.html'">처음으로 돌아가기</button>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('fadeInMask').classList.add('clear');
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentType = urlParams.get('type') || 'love';
+    
+    const textarea = document.getElementById('letterText');
+    const title = document.getElementById('letterSub');
+    const stampBtn = document.getElementById('stampBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const endingOverlay = document.getElementById('endingOverlay');
+
+    function applyTheme(theme) {
+      currentType = theme;
+      title.className = 'letter-title';
+
+      if (theme === 'love') {
+        title.classList.add('title-love');
+        title.innerText = "사랑해요.";
+        document.getElementById('f-love').checked = true;
+        stampBtn.style.backgroundImage = "url('./img/heart.jpg')"; 
+      } else if (theme === 'thanks') {
+        title.classList.add('title-thanks');
+        title.innerText = "고마워요.";
+        document.getElementById('f-thanks').checked = true;
+        stampBtn.style.backgroundImage = "url('./img/thank.jpg')"; 
+      } else if (theme === 'sorry') {
+        title.classList.add('title-sorry');
+        title.innerText = "미안해요.";
+        document.getElementById('f-sorry').checked = true;
+        stampBtn.style.backgroundImage = "url('./img/sorry.jpg')"; 
+      }
+      changeFontOnly(theme);
+    }
+
+    function changeFontOnly(fontTheme) {
+      textarea.className = 'letter-textarea';
+      
+      if (fontTheme === 'love') {
+        textarea.classList.add('font-love');
+        sendBtn.style.fontFamily = "'Single Day', cursive";
+      } else if (fontTheme === 'thanks') {
+        textarea.classList.add('font-thanks');
+        sendBtn.style.fontFamily = "'Hi Melody', cursive";
+      } else if (fontTheme === 'sorry') {
+        textarea.classList.add('font-sorry');
+        sendBtn.style.fontFamily = "'Nanum Brush Script', cursive";
+      }
+    }
+
+    function rotateTheme() {
+      if (currentType === 'love') applyTheme('thanks');
+      else if (currentType === 'thanks') applyTheme('sorry');
+      else if (currentType === 'sorry') applyTheme('love');
+    }
+
+    // 마음 보내기 클릭 시 발동하는 감성 엔딩 시퀀스 연동
+    sendBtn.onclick = function() {
+      endingOverlay.classList.add('active');
+    };
+
+    applyTheme(currentType);
+  </script>
+
+</body>
+</html>

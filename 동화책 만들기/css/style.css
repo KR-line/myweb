@@ -1,0 +1,475 @@
+/* 1. 기본 초기화 및 부드러운 글꼴 세팅 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+}
+
+body {
+    background-color: rgb(255, 248, 239);
+    width: 1300px;
+    margin: 0 auto;
+    position: relative;
+    color: #333333;
+    /* 💡 중요: 푸터까지 포함해서 컨텐츠가 길어지면 body 전체가 자연스럽게 늘어나도록 설정 */
+    min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. 좌우 투명 클릭 영역 (body 전체 높이를 다 커버하도록 수정) */
+.before, .after {
+    position: absolute;
+    top: 0;
+    bottom: 0;          /* 💡 height: 100vh 대신 top:0, bottom:0을 주면 페이지가 길어져도 끝까지 클릭 영역이 늘어납니다 */
+    width: 50%;
+    background: transparent;
+    cursor: pointer;
+    z-index: 999;
+}
+.before { left: 0; }
+.after { right: 0; }
+
+/* 3. 인트로 페이지 스타일 고정 (필요시) */
+#intro {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+#intro img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 0;
+}
+
+/* 인트로 */
+body.intro-body {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    
+    /* 화면에 꽉 찬 이미지 뒤쪽 여백을 깊이감 있는 검은색 계열로 채워 분위기 조성 */
+    background-color: #1a1512 !important; 
+    
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* 2. 전체 링크와 인트로 박스 영역 고정 */
+body.intro-body > a,
+#intro {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important; /* 글씨를 위에 띄우기 위한 기준축 */
+    overflow: hidden !important;   /* 마우스 올렸을 때 그림이 상자 밖으로 넘치지 않게 자름 */
+}
+
+/* 3. ⭐️ 이미지 기본 배치 및 마우스 효과 준비 */
+#intro img {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important; /* 비율 유지하며 화면 가둠 */
+    display: block !important;
+    
+    /* 부드러운 애니메이션 효과를 위해 전환 속도(transition) 설정 */
+    transition: transform 0.6s ease-in-out, filter 0.6s ease-in-out !important;
+}
+
+/* 4. ⭐️ 마우스 올렸을 때(Hover) 연출: 그림이 슬며시 커지며 은은하게 어두워짐 */
+#intro:hover img {
+    transform: scale(1.04); /* 4% 만큼 부드럽게 줌인(확대) */
+    filter: brightness(0.6) contrast(1.1); /* 글씨가 잘 보이도록 그림을 살짝 어둡고 선명하게 만듦 */
+}
+
+/* 5. ✉️ 이미지 위에 떠 있는 비밀 안내 문구 스타일 디자인 */
+.start-msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 정확히 화면 정중앙에 고정 */
+    text-align: center;
+    color: #ffffff;
+    
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    line-height: 1.8;
+    
+    /* 평소에는 눈에 안 보이다가 마우스를 올리면 나타나도록 투명도 설정 */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* 글씨가 배경에 묻히지 않게 명암 추가 */
+    z-index: 10;
+}
+
+/* 💡 동화 제목 강조 스타일 ("미운 오리 새끼") */
+.start-msg span {
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    color: #f7e6d4; /* 따뜻하고 고급스러운 베이지빛 골드색 */
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+/* 6. ⭐️ 마우스를 표지에 올리면 안내 문구가 스르륵 나타남 */
+#intro:hover .start-msg {
+    opacity: 1; /* 투명도를 100%로 올려 글씨를 선명하게 띄움 */
+}
+
+/* 4. 1페이지 (전체형 레이아웃) */
+#page1 {
+    width: 1250px;
+    min-height: calc(100vh - 140px); /* 화면을 꽉 채우되 푸터 공간 확보 */
+    margin: 30px auto 10px auto;
+    
+    /* 다른 페이지들과 일관된 하얀 종이책 양장본 질감 부여 */
+    background-color: #ffffff;
+    border: 1px solid #e2d7c7;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(163, 146, 122, 0.15);
+    
+    display: flex;
+    flex-direction: column;    /* 💡 중요: 왼쪽/오른쪽이 아니라 위(그림)/아래(글)로 배치 */
+    align-items: center;       /* 가로 축 기준 정중앙 정렬 */
+    justify-content: flex-start;
+    padding: 40px;             /* 책 안쪽 전체 여백 */
+    position: relative;
+    overflow: hidden;
+}
+
+/* ⚠️ 주의: 상하 배치 레이아웃이므로, 2단 펼침용 세로 접힘선(::after)은 제거합니다 */
+#page1::after {
+    display: none !important;
+}
+
+/* 2. [상단 영역] 가로로 긴 삽화 공간 */
+#page1 .pic {
+    width: 100%;               /* 책 가로폭을 넉넉히 활용 */
+    max-width: 900px;          /* 그림이 모니터 화면에 너무 무식하게 거대해지는 것을 방지 */
+    margin-bottom: 30px;       /* 하단 글씨와의 이쁜 간격 */
+    display: flex;
+    justify-content: center;
+}
+
+#page1 .pic img {
+    width: 100%;               /* 부모 max-width에 맞춰 꽉 채움 */
+    height: auto;              /* 가로형 삽화 원래 비율 완벽 보존 */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06); /* 그림 액자 효과 */
+}
+
+/* 3. [하단 영역] 동화 본문 글 공간 */
+#page1 .story {
+    width: 100%;
+    max-width: 900px;          /* 글 줄이 너무 길어지면 눈이 피로하므로 그림 크기와 맞춤 */
+    padding: 10px 20px;
+}
+
+/* 4. 본문 <br> 줄글 가독성 디자인 */
+#page1 .story p {
+    font-size: 17px;           /* 시원하게 읽히는 본문 크기 */
+    line-height: 2.2;          /* 줄바꿈이 많은 글 특성에 맞춰 행간을 넓혀 시원하게 연출 */
+    color: #444444;            /* 눈이 편안한 먹색 */
+    text-align: center;        /* 💡 가로형 그림 레이아웃에 어울리도록 시적인 센터 정렬 적용 */
+    word-break: keep-all;      /* 단어 쪼개짐 방지 */
+    letter-spacing: -0.3px;    /* 자간을 미세하게 좁혀 정갈함 추가 */
+}
+
+/* 5. 2~7페이지 공통 스타일 (★핵심 교정 구역★) */
+.page {
+    width: 1250px;
+    /* 💡 height: 100vh; 고정을 지우고 min-height로 변경합니다. */
+    /* 최소 화면 높이를 보장하되, 글이 많아지면 아래로 알아서 늘어납니다! */
+    min-height: calc(100vh - 120px); 
+    margin: 0 auto;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 50px 0;
+    flex-grow: 1; /* 푸터를 화면 맨 아래로 밀어내는 역할 */
+}
+
+/* 이미지 박스 고정 */
+.page .pic {
+    width: 45%; 
+    max-height: 75vh; /* 💡 이미지가 모니터 화면보다 너무 거대해지는 것을 방지 */
+}
+.page .pic img {
+    width: 100%;
+    height: auto; 
+    max-height: 75vh;
+    object-fit: contain; /* 세로형 삽화가 잘리지 않고 온전히 다 보이도록 설정 */
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+/* 텍스트 박스 고정 */
+.page .story {
+    width: 50%; /* 💡 글 상자 공간을 살짝 넓혀서 글자가 덜 밀리게 조절 */
+    padding: 0 20px;
+}
+.story p {
+    line-height: 1.8; /* 💡 줄간격을 2에서 1.8로 미세하게 조정하여 가독성을 높이고 정갈하게 만듦 */
+    font-size: 18px;
+    margin-bottom: 12px; /* 문단 사이 여백 */
+    word-break: keep-all;
+}
+
+/* 💡 만약 3, 5, 7페이지 등 홀수 페이지를 좌우 반전 시키고 싶다면 해당 태그에 이 클래스나 ID를 부여하세요 */
+.page-reverse {
+    flex-direction: row-reverse; 
+}
+
+/* 6. 하단 푸터 (글이 길어지면 푸터도 자동으로 밑으로 밀려납니다) */
+footer {
+    width: 1250px;
+    margin: 0 auto 30px auto; /* 아래쪽에 살짝 여백 부여 */
+    background-color: rgba(255, 228, 196, 0.6); 
+    border-radius: 8px;
+    padding: 15px 0;
+}
+footer ul {
+    list-style: none;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+}
+footer ul li {
+    font-size: 15px;
+    font-weight: bold;
+    color: #555555;
+}
+
+#left { text-align: left; width: 20%; }
+#center { text-align: center; width: 60%; line-height: 1.4; font-size: 14px; }
+#right { text-align: right; width: 20%; }
+
+
+body.intro-body {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important; /* 스크롤바 완전 차단 */
+    
+    /* 💡 팁: 이미지 좌우나 위아래에 남는 여백 공간을 
+       동화책 배경색과 똑같은 부드러운 미색으로 채워줍니다 */
+    background-color: rgb(255, 248, 239) !important; 
+    
+    /* 화면 중앙에 이미지를 배치하기 위한 flex 정렬 */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* 2. 링크와 div 상자도 부모 크기를 100% 꽉 채우도록 설정 */
+body.intro-body > a,
+#intro {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* 3. ⭐️ 최종 핵심: 그림 비율을 완벽히 유지하며 화면 안에 쏙 넣기 */
+#intro img {
+    position: static !important;
+    width: 100% !important;
+    height: 100% !important;
+    
+    /* 💡 중요: contain으로 바꾸면 이미지 원본 비율이 절대 깨지지 않고 
+       퍼지거나 잘림 없이, 현재 모니터 화면 높이나 너비 중 작은 쪽에 맞춰 
+       액자처럼 화면 정중앙에 이쁘게 가둬집니다. */
+    object-fit: contain !important; 
+    
+    margin: 0 auto !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+.page {
+    width: 1250px;
+    min-height: calc(100vh - 140px); /* 화면을 꽉 채우되 푸터 공간 확보 */
+    margin: 30px auto 10px auto;
+    
+    /* 💡 진짜 종이책처럼 보이게 하는 고급스러운 연출 */
+    background-color: #ffffff; /* 하얀 종이 질감 */
+    border: 1px solid #e2d7c7;  /* 은은한 책 테두리 선 */
+    border-radius: 12px;       /* 부드러운 양장본 모서리 */
+    box-shadow: 0 10px 30px rgba(163, 146, 122, 0.15); /* 책이 붕 떠 있는 듯한 입체적 그림자 */
+    
+    display: flex;             /* 왼쪽 장(그림)과 오른쪽 장(글)을 나란히 배치 */
+    align-items: stretch;      /* 좌우 박스 높이를 똑같이 맞춤 */
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 2. 💡 책의 한가운데 '접히는 중앙선' 효과 (진짜 책 같은 입체감 부여) */
+.page::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    /* 책이 접히는 부분의 미세한 음영 표현 */
+    background: linear-gradient(to right, rgba(0,0,0,0.05), rgba(0,0,0,0.01), rgba(0,0,0,0.05));
+    border-left: 1px solid rgba(0, 0, 0, 0.04);
+    border-right: 1px solid rgba(0, 0, 0, 0.04);
+    z-index: 5;
+}
+
+/* 3. [왼쪽 페이지] 삽화 그림 공간 */
+.page .pic {
+    width: 50%;                /* 정확히 책의 절반을 차지 */
+    padding: 40px 50px 40px 40px; /* 오른쪽 책 접히는 선 주변 여백 확보 */
+    display: flex;
+    align-items: center;       /* 그림을 상하 정중앙 정렬 */
+    justify-content: center;
+    background-color: #faf7f2; /* 그림 배경을 미세하게 톤다운하여 깊이감 부여 */
+}
+
+.page .pic img {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;          /* 모니터 밖으로 절대 안 넘치게 고정 */
+    object-fit: contain;       /* 세로형 분할 삽화 비율 완벽 유지 */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* 그림 액자 효과 */
+}
+
+/* 4. [오른쪽 페이지] 동화 본문 글 공간 */
+.page .story {
+    width: 50%;                /* 정확히 책의 나머지 절반을 차지 */
+    padding: 60px 40px 60px 60px; /* 여백을 넉넉히 주어 고급 소설책 같은 가독성 제공 */
+    display: flex;
+    flex-direction: column;    /* p 태그들을 위에서 아래로 정렬 */
+    justify-content: center;   /* 글 전체를 세로 정중앙 정렬 */
+}
+
+/* 동화책 본문 폰트 가독성 극대화 */
+.story p {
+    font-size: 17.5px;
+    line-height: 1.9;          /* 눈이 편안한 황금 줄간격 */
+    color: #444444;            /* 완전히 새까만 색 대신 눈이 덜 피로한 먹색 */
+    margin-bottom: 16px;       /* 문단 사이의 정갈한 간격 */
+    text-align: justify;       /* 실제 책처럼 좌우 글 끝 정렬 균등하게 정돈 */
+    word-break: keep-all;      /* 단어 쪼개짐 방지 */
+    text-indent: 5px;          /* 문단 시작할 때 살짝 들여쓰기 감성 추가 */
+}
+
+/* 💡 만약 홀수/짝수 페이지별로 좌우를 교차하고 싶다면 (선택사항)
+   HTML .page 태그에 'page-reverse' 클래스만 추가하면 글과 그림이 바뀝니다 */
+.page-reverse {
+    flex-direction: row-reverse;
+}
+.page-reverse .pic { padding: 40px 40px 40px 50px; }
+.page-reverse .story { padding: 60px 60px 60px 40px; }
+footer {
+    width: 1250px;
+    margin: 15px auto 40px auto;
+    background: #ffffff;
+    border: 1px solid #e2d7c7;
+    border-radius: 30px;        /* 둥근 알약 모양의 세련된 조작바 */
+    padding: 12px 0;
+    box-shadow: 0 4px 15px rgba(163, 146, 122, 0.08);
+}
+
+footer ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+}
+
+footer ul li {
+    font-size: 14px;
+    font-weight: 600;
+    color: #8a7a66;
+}
+
+#left { width: 20%; text-align: left; }
+#center { width: 60%; text-align: center; line-height: 1.5; color: #9e8e79; font-size: 13px; }
+#right { width: 20%; text-align: right; }
+
+
+/* 1. 오른쪽 장 전체를 수직/수평 정중앙 배치 룸으로 변경 */
+.last-story-box {
+    display: flex !important;
+    flex-direction: column !important;
+    
+    /* ⭐️ 수직(세로) 정중앙 정렬을 강제하는 마법의 속성들 */
+    justify-content: center !important; 
+    align-items: center !important;     /* 수평(가로) 정중앙 정렬 */
+    
+    width: 50% !important;
+    height: 100% !important;
+    min-height: 500px !important;       /* 부모의 세로 높이를 빵빵하게 확보 */
+    
+    padding: 0 !important;              /* 한쪽으로 치우침을 방지하기 위해 패딩 완전 초기화 */
+    margin: 0 auto !important;
+    position: relative !important;
+}
+
+/* 2. - FIN - 타이틀 스타일 및 중앙 정렬 */
+.fin-title {
+    font-size: 32px;
+    color: #8a7a66;
+    letter-spacing: 6px;
+    margin-bottom: 25px;
+    font-weight: 400;
+    text-align: center; /* 글자 자체도 가운데 정렬 */
+}
+
+/* 3. 누르고 싶게 만드는 고급스러운 입체 버튼 디자인 */
+.btn-home {
+    display: inline-block !important;
+    padding: 14px 40px;
+    background-color: #8a7a66; /* 차분한 동화책 브라운 톤 */
+    color: #ffffff !important;
+    text-decoration: none !important; /* 밑줄 절대 차단 */
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 30px; /* 동글동글한 세련된 알약 모양 */
+    
+    /* 그림자 효과로 입체감 부여 */
+    box-shadow: 0 5px 15px rgba(138, 122, 102, 0.35);
+    transition: all 0.25s ease-in-out; /* 마우스 올릴 때 부드러운 전환 */
+    
+    z-index: 1000; /* 투명 클릭 영역보다 위로 올려서 클릭 가능하게 조절 */
+    position: relative;
+    text-align: center;
+}
+
+/* 마우스 올렸을 때 (Hover) 색상이 깊어지고 살짝 떠오르는 효과 */
+.btn-home:hover {
+    background-color: #6e5f4f !important;
+    transform: translateY(-3px); /* 위로 3픽셀 슬라이딩 */
+    box-shadow: 0 8px 20px rgba(138, 122, 102, 0.45);
+}
+
+/* 버튼을 마우스로 꾹 누르는 순간 (Active) 찰칵 들어가는 효과 */
+.btn-home:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(138, 122, 102, 0.2);
+}

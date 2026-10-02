@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>감성 영상 플레이어</title>
+  <!-- 구글 본고딕 명조(Serif) 및 고딕(Sans-Serif) 폰트 로드 -->
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Noto+Sans+KR:wght@300;400&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    /* 전체 화면 리셋 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      overflow: hidden;
+    }
+
+    /* 화면 전체를 차지하는 비디오 컨테이너 */
+    .fullscreen-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 영상 스타일: 0.1초 만에 급박한 암전 */
+    .fullscreen-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      transition: opacity 0.1s ease;
+    }
+
+    /* 전체 콘텐츠 박스 (대사들 + 버튼 레이아웃) */
+    .content-box {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* 대사 공통 스타일 */
+    .text-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    /* 첫 번째 대사 스타일 */
+    .ending-text-1 {
+      color: #ffffff;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      line-height: 1.8;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 두 번째 대사 스타일 */
+    .ending-text-2 {
+      color: rgba(255, 255, 255, 0.9);
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      line-height: 1.8;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 버튼 그룹 */
+    .btn-group {
+      display: flex;
+      gap: 20px;
+      opacity: 0;
+    }
+
+    /* 감성적인 버튼 공통 스타일 */
+    .btn-group button {
+      background-color: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.75);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      padding: 14px 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.4s ease;
+    }
+
+    .btn-group button:hover {
+      background-color: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.8);
+      color: #ffffff;
+    }
+
+    /* [애니메이션 시동 단계] 영상이 끝난 후 실행될 클래스 */
+    .video-ended video {
+      opacity: 0;
+    }
+
+    /* 1. 첫 대사 등장: 영상 종료 0.5초 후부터 2.5초간 등장 */
+    .video-ended .ending-text-1 {
+      opacity: 1;
+      transition: opacity 2.5s ease-in-out;
+      transition-delay: 0.5s; 
+    }
+
+    /* 2. 두 번째 대사 등장: 첫 대사 완료 후 1초 여운 뒤 등장 */
+    .video-ended .ending-text-2 {
+      opacity: 1;
+      transition: opacity 2.5s ease-in-out;
+      transition-delay: 4s;
+    }
+
+    /* 3. 버튼 그룹 등장: 두 번째 대사 완료 후 1초 여운 뒤 등장 */
+    .video-ended .btn-group {
+      opacity: 1;
+      transition: opacity 2.5s ease-in-out;
+      transition-delay: 7.5s;
+    }
+
+    /* 🎬 [새로 추가] letter.html로 넘어갈 때 화면을 부드럽게 가려줄 암전 막 */
+    .page-transit-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000000;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease-in-out; /* 1초 동안 스르륵 어두워짐 */
+    }
+    .page-transit-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 페이지 전환용 오버레이 막 -->
+  <div class="page-transit-overlay" id="transitOverlay"></div>
+
+  <div class="fullscreen-container" id="stage">
+    <!-- 영상 경로는 my_video -1.mp4 고정 -->
+    <video id="myVideo" src="./video/my_video -1.mp4" autoplay muted playsinline></video>
+    
+    <div class="content-box">
+      <!-- 대사 그룹 -->
+      <div class="text-group">
+        <div class="ending-text-1">
+          지금 머릿속에 가장 먼저<br>떠오른 사람은 누구인가요?
+        </div>
+        <div class="ending-text-2">
+          그 사람에게 하고싶은 말은 무엇인가요?
+        </div>
+      </div>
+
+      <!-- [수정] 바로 페이지 이동을 하지 않고 자바스크립트 함수(goLetter)를 거치도록 변경 -->
+      <div class="btn-group">
+        <button onclick="goLetter('love')">사랑한다고 말하기</button>
+        <button onclick="goLetter('thanks')">고맙다고 말하기</button>
+        <button onclick="goLetter('sorry')">미안하다고 말하기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('myVideo');
+    const stage = document.getElementById('stage');
+    const transitOverlay = document.getElementById('transitOverlay');
+
+    // 영상이 완전히 끝났을 때 타임라인 애니메이션 시작
+    video.onended = function() {
+      stage.classList.add('video-ended');
+    };
+
+    // 💌 [새로 추가] 버튼 클릭 시 부드럽게 화면을 암전시킨 후 넘겨주는 함수
+    function goLetter(type) {
+      // 1. 은은한 블랙 오버레이를 켜서 화면을 스르륵 가림
+      transitOverlay.classList.add('active');
+      
+      // 2. 1초 동안 페이드아웃 애니메이션이 끝난 후 letter.html로 이동
+      setTimeout(() => {
+        location.href = `letter.html?type=${type}`;
+      }, 1000); // 1000밀리초 = 1초
+    }
+  </script>
+
+</body>
+</html>
