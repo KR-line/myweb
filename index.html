@@ -5,37 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        
+       
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        a:visited{
-            color: black;
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            background-color: #f5f6fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        a:hover{
-            color: gray;
-        }
+
         
+        h1 {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        
+        .hub-container {
+            display: flex;
+            gap: 24px;
+            max-width: 1000px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap; /* 화면이 좁아지면 자동으로 아래로 떨어짐 */
+        }
+
+       
+        .hub-card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        
+        .hub-card {
+            width: 210px;
+            height: 140px;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #4a5568;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s ease;
+            text-align: center;
+            padding: 20px;
+        }
+
+        
+        .hub-card-link:hover .hub-card {
+            transform: translateY(-8px); 
+            border-color: #ce3333; 
+            color: #ce3333;
+            box-shadow: 0 20px 25px -5px rgba(206, 51, 51, 0.1), 0 10px 10px -5px rgba(206, 51, 51, 0.04);
+        }
+
+       
+        .hub-card-link[href*="한글에 관하여"]:hover .hub-card {
+            border-color: #78281e;
+            color: #78281e;
+            box-shadow: 0 20px 25px -5px rgba(120, 40, 30, 0.1);
+        }
+
+        
+        .hub-card-link:visited {
+            color: inherit;
+        }
+
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 26px;
+                margin-bottom: 24px;
+            }
+            .hub-container {
+                gap: 16px;
+            }
+            .hub-card {
+                width: 100%; 
+                height: 90px;
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
-    <a href="./편지 만들기/index.html" style="text-decoration: none;">
-        <div style="font-size: 25px; border: 3px solid rgb(136, 11, 11); width: 200px; background-color: rgb(206, 51, 51); color: white;">
-            편지 만들기
-        </div>
-    </a>
-    <a href="./동화책 만들기/index.html" style="text-decoration: none;">
-        <div style="font-size: 25px; border: 3px solid rgb(136, 11, 11); width: 200px; background-color: rgb(206, 51, 51); color: white;">
-            동화책 만들기
-        </div>
-    </a>
-    <a href="./머릿속 정리/main.html" style="text-decoration: none;">
-        <div style="font-size: 25px; border: 3px solid rgb(136, 11, 11); width: 200px; background-color: rgb(206, 51, 51); color: white;">
-            ???
-        </div>
-    </a>
-    <a href="./한글에 관하여/page.html" style="text-decoration: none;">
-        <div style="font-size: 25px; border: 3px solid rgb(136, 11, 11); width: 200px; background-color: rgb(206, 51, 51); color: white;">
-            한글에 관하여
-        </div>
-    </a>
+    <h1>My Web Projects</h1>
+
+    <div class="hub-container">
+        
+        <a href="./편지 만들기/index.html" class="hub-card-link">
+            <div class="hub-card">편지 만들기</div>
+        </a>
+
+       
+        <a href="./동화책 만들기/index.html" class="hub-card-link">
+            <div class="hub-card">동화책 만들기</div>
+        </a>
+
+        
+        <a href="./머릿속 정리/main.html" class="hub-card-link">
+            <div class="hub-card">머릿속 정리</div>
+        </a>
+
+        
+        <a href="./한글에 관하여/page.html" class="hub-card-link">
+            <div class="hub-card">한글에 관하여</div>
+        </a>
+    </div>
 </body>
 </html>
