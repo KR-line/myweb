@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            background-color: rgb(214, 196, 160);   /* 책상 색 */
+        }
+
+        body {
+            width: 800px;
+            margin: 24px auto 40px;
+            background-color: rgb(245, 236, 215);   /* 한지 색 */
+            color: rgb(60, 45, 30);                 /* 먹물 색 */
+            border: 1px solid rgb(170, 140, 100);
+            box-shadow: inset 0 0 60px rgba(150, 110, 60, 0.3),
+                        0 6px 24px rgba(80, 55, 25, 0.25);
+        }
+
+        #title {
+            width: 100%;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Noto Serif KR", "Nanum Myeongjo", "Batang", serif;
+            font-size: 44px;
+            font-weight: bold;
+            letter-spacing: 0.12em;
+            color: rgb(120, 40, 30);
+            border-bottom: 4px double rgb(170, 140, 100);
+        }
+
+        #list {
+            display: flex;
+            align-items: center;
+            height: 80px;
+            background-color: rgb(232, 217, 185);
+            border-bottom: 1px solid rgb(170, 140, 100);
+        }
+
+        ul {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            height: 36px;
+            border: 1px solid rgb(120, 90, 55);
+            border-radius: 30px;
+            background-color: rgb(245, 236, 215);
+            font-size: 17px;
+            cursor: pointer;
+            transition: transform 0.15s, background-color 0.15s, color 0.15s;
+        }
+
+        li:hover {
+            background-color: rgb(255, 249, 234);
+            color: rgb(120, 40, 30);
+            border-color: rgb(120, 40, 30);
+            transform: scale(1.06);
+        }
+
+        #imgcontainer {
+            text-align: center;
+        }
+
+        #imgcontainer img {
+            display: block;
+            max-width: 440px;
+            width: 80%;
+            margin: 28px auto 0;
+            padding: 6px;
+            background-color: rgb(252, 247, 233);
+            border: 1px solid rgb(170, 140, 100);
+            box-shadow: 0 4px 14px rgba(80, 55, 25, 0.3);
+        }
+
+        #main {
+            white-space: pre-line;
+            word-break: keep-all;
+            padding: 28px 48px 48px;
+            font-size: 17px;
+            line-height: 2;
+            min-height: 500px; 
+        }
+
+        @media (max-width: 840px) {
+            body {
+                width: auto;
+                margin: 0;
+                border-left: none;
+                border-right: none;
+            }
+
+            #title {
+                font-size: 32px;
+            }
+
+            li {
+                width: 30%;
+                font-size: 15px;
+            }
+
+            #main {
+                padding: 24px 20px 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="title">
+        한글에 관하여
+    </div>
+    <div id="list">
+        <ul>
+            <li id="menu1">창제와 반포</li>
+            <li id="menu2">만든 원리</li>
+            <li id="menu3">한글날</li>
+        </ul>
+    </div>
+    <div id="imgcontainer">
+
+    </div>
+    <div id="main">
+        한글은 누가, 언제, 왜 만들었는지가 분명하게 기록으로 남아 있는 문자다. 어려운 한자를 배우기 힘들었던 백성들이 자기 뜻을 쉽게 글로 전할 수 있도록, 세종은 소리를 내는 입과 혀의 모양을 본떠 새 글자를 만들었다. 이 페이지에서는 한글이 만들어져 세상에 알려진 과정, 글자에 담긴 원리, 그리고 이를 기념하는 한글날의 이야기를 차례로 살펴본다. 위의 메뉴를 눌러 하나씩 읽어 보자.
+    </div>
+    
+    <script>
+        const m1 = document.getElementById("menu1");
+        const m2 = document.getElementById("menu2");
+        const m3 = document.getElementById("menu3");
+        const main = document.getElementById("main");
+        const imgc = document.getElementById("imgcontainer");
+        
+        m1.addEventListener("click", () => {
+            loading('창제와 반포')
+        })
+
+        m2.addEventListener("click", () => {
+            loading('만든 원리')
+        })
+
+        m3.addEventListener("click", () => {
+            loading('한글날');
+        })
+
+        function loading(name) {
+            main.textContent = "";
+            imgc.textContent = "";    
+            const xhttp = new XMLHttpRequest();
+
+            xhttp.open("Get", name + ".txt");
+
+            xhttp.onload = function () {
+                main.textContent = xhttp.responseText;
+                const img = document.createElement('img');
+                if (name === '창제와 반포') {
+                    img.src = "./img/세종대왕.jpg";
+                    img.alt = "세종대왕.jpg"
+                    imgc.appendChild(img);
+                } else if (name === '만든 원리'){
+                    img.src = "./img/한글 창제 원리.jpg";
+                    img.alt = "한글 창제 원리.jpg"
+                    imgc.appendChild(img);
+                } else if (name === '한글날'){
+                    img.src = "./img/한글날1.png";
+                    img.alt = "한글날1.png"
+                    imgc.appendChild(img);
+                }
+            }
+
+            xhttp.send();
+        }
+
+
+
+    </script>
+
+
+
+
+
+</body>
+
+</html>
